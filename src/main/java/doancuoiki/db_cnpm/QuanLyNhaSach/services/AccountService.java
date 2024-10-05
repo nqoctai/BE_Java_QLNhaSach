@@ -50,4 +50,8 @@ public class AccountService {
     public void deleteAccount(Long id) {
         accountRepository.deleteById(id);
     }
+
+    public Account getUserByEmail(String email) {
+        return accountRepository.findByEmail(email);
+    }
 }

@@ -9,4 +9,6 @@ import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Account;
 public interface AccountRepository extends JpaRepository<Account, Long> {
     boolean existsByEmail(String email);
 
+    Account findByEmail(String email);
+
 }

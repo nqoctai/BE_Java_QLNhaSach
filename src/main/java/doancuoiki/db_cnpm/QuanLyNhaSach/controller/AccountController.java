@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,8 +27,11 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    public AccountController(AccountService accountService) {
+    private final PasswordEncoder passwordEncoder;
+
+    public AccountController(AccountService accountService, PasswordEncoder passwordEncoder) {
         this.accountService = accountService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/account")
@@ -38,7 +42,8 @@ public class AccountController {
         if (emailExist) {
             throw new AppException("Email đã tồn tại");
         }
-
+        String hashPassword = passwordEncoder.encode(rqAccount.getPassword());
+        rqAccount.setPassword(hashPassword);
         Account res = accountService.createAccount(rqAccount);
         ApiResponse<Account> response = new ApiResponse<>();
         response.setData(res);

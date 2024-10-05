@@ -23,6 +23,7 @@ public class GlobalException {
         ApiResponse<String> response = new ApiResponse<>();
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         response.setMessage(e.getMessage());
+        response.setError("Internal Server Error");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
@@ -31,6 +32,7 @@ public class GlobalException {
         ApiResponse<String> response = new ApiResponse<>();
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setMessage(e.getMessage());
+        response.setError("Exception occurs...");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
@@ -41,6 +43,7 @@ public class GlobalException {
 
         ApiResponse<Object> res = new ApiResponse<Object>();
         res.setStatus(HttpStatus.BAD_REQUEST.value());
+        res.setError(ex.getBody().getDetail());
 
         List<String> errors = fieldErrors.stream().map(f -> f.getDefaultMessage()).collect(Collectors.toList());
         res.setMessage(errors.size() > 1 ? errors : errors.get(0));
