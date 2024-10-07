@@ -67,7 +67,8 @@ public class AuthController {
                                         currentAccountDB.getEmail(),
                                         currentAccountDB.getUsername(),
                                         currentAccountDB.getAvatar(),
-                                        currentAccountDB.getRole());
+                                        currentAccountDB.getPhone(),
+                                        currentAccountDB.getRole().getName());
                         resLoginDTO.setAccount(accountLogin);
                 }
                 String access_token = this.securityUtil.createAccessToken(authentication.getName(), resLoginDTO);
@@ -107,7 +108,8 @@ public class AuthController {
                         accountLogin.setEmail(currentAccountDB.getEmail());
                         accountLogin.setName(currentAccountDB.getUsername());
                         accountLogin.setAvatar(currentAccountDB.getAvatar());
-                        accountLogin.setRole(currentAccountDB.getRole());
+                        accountLogin.setPhone(currentAccountDB.getPhone());
+                        accountLogin.setRole(currentAccountDB.getRole().getName());
                         userGetAccount.setAccount(accountLogin);
                 }
 
@@ -138,7 +140,8 @@ public class AuthController {
                                 currentAccountDB.getEmail(),
                                 currentAccountDB.getUsername(),
                                 currentAccountDB.getAvatar(),
-                                currentAccountDB.getRole());
+                                currentAccountDB.getPhone(),
+                                currentAccountDB.getRole().getName());
                 resLoginDTO.setAccount(accountLogin);
                 String access_token = this.securityUtil.createAccessToken(email, resLoginDTO);
                 resLoginDTO.setAccessToken(access_token);
