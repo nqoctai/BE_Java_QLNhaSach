@@ -1,7 +1,9 @@
-package doancuoiki.db_cnpm.QuanLyNhaSach.dto;
+package doancuoiki.db_cnpm.QuanLyNhaSach.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Account;
+import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,17 +16,18 @@ public class ResLoginDTO {
     @JsonProperty("access_token")
     private String accessToken;
 
-    private UserLogin user;
+    private AccountLogin account;
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UserLogin {
+    public static class AccountLogin {
         private long id;
         private String email;
         private String name;
-        // private Role role;
+        private String avatar;
+        private Role role;
     }
 
     @Getter
@@ -32,14 +35,14 @@ public class ResLoginDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UserGetAccount {
-        private UserLogin user;
+        private AccountLogin account;
     }
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UserInsideToken {
+    public static class AccountInsideToken {
         private long id;
         private String email;
         private String name;

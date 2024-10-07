@@ -22,6 +22,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import doancuoiki.db_cnpm.QuanLyNhaSach.util.SecurityUtil;
 
@@ -31,11 +32,14 @@ public class SecurityConfiguaration {
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
+    // private final CorsConfigurationSource corsConfigurationSource;
+
     @Value("${nqoctai.jwt.base64-secret}")
     private String jwtKey;
 
     public SecurityConfiguaration(CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
         this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
+        // this.corsConfigurationSource = corsConfigurationSource;
     }
 
     @Bean
@@ -49,6 +53,7 @@ public class SecurityConfiguaration {
         String[] whiteList = {
                 "/",
                 "/api/v1/auth/login", "/api/v1/auth/refresh", "/api/v1/auth/register",
+                "/test"
                 // "/api/v1/account"
         };
 

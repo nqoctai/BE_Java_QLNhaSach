@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Account;
+import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Role;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ApiResponse;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqUpdateAccountDTO;
 import doancuoiki.db_cnpm.QuanLyNhaSach.services.AccountService;
+import doancuoiki.db_cnpm.QuanLyNhaSach.services.RoleService;
 import doancuoiki.db_cnpm.QuanLyNhaSach.util.error.AppException;
 import jakarta.validation.Valid;
 
@@ -29,9 +32,12 @@ public class AccountController {
 
     private final PasswordEncoder passwordEncoder;
 
-    public AccountController(AccountService accountService, PasswordEncoder passwordEncoder) {
+    private final RoleService roleService;
+
+    public AccountController(AccountService accountService, PasswordEncoder passwordEncoder, RoleService roleService) {
         this.accountService = accountService;
         this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
     }
 
     @PostMapping("/account")
@@ -73,12 +79,14 @@ public class AccountController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/account/{id}")
-    public ResponseEntity<ApiResponse<Account>> updateAccount(@PathVariable("id") Long id,
-            @Valid @RequestBody Account rqAccount)
+    @PutMapping("/account")
+    public ResponseEntity<ApiResponse<Account>> updateAccount(@Valid @RequestBody ReqUpdateAccountDTO rqAccount)
             throws AppException {
-
-        Account res = accountService.updateAccount(id, rqAccount);
+        boolean isExist = accountService.checkAccountExist(rqAccount.getId());
+        if (!isExist) {
+            throw new AppException("Id không tồn tại");
+        }
+        Account res = accountService.updateAccount(rqAccount);
         ApiResponse<Account> response = new ApiResponse<>();
         response.setData(res);
         response.setMessage("Cập nhật tài khoản thành công");
