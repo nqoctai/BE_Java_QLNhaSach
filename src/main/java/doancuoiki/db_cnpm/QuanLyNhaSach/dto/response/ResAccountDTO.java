@@ -15,6 +15,7 @@ public class ResAccountDTO {
     private String email;
     private String username;
     private String phone;
+    private String avatar;
     private Instant updatedAt;
     private Instant createdAt;
 

@@ -13,6 +13,7 @@ public class ResUpdateAccountDTO {
     private String username;
     private String email;
     private String phone;
+    private String avatar;
     private Instant updatedAt;
 
 }

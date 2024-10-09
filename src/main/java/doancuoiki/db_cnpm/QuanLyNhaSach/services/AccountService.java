@@ -77,6 +77,7 @@ public class AccountService {
         }
         accountDB.setUsername(rqAccount.getUsername());
         accountDB.setPhone(rqAccount.getPhone());
+        accountDB.setAvatar(rqAccount.getAvatar());
         return accountRepository.save(accountDB);
     }
 

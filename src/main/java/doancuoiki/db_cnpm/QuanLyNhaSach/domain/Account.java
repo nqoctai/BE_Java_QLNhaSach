@@ -27,6 +27,7 @@ public class Account {
     private long id;
 
     @NotBlank(message = "Username không được để trống")
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String username;
 
     @NotBlank(message = "Password không được để trống")
