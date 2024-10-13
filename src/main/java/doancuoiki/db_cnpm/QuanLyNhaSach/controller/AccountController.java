@@ -2,6 +2,8 @@ package doancuoiki.db_cnpm.QuanLyNhaSach.controller;
 
 import java.util.List;
 
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqChangePassword;
+import doancuoiki.db_cnpm.QuanLyNhaSach.repository.AccountRepository;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -38,16 +40,19 @@ public class AccountController {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final AccountRepository accountRepository;
+
     private final RoleService roleService;
 
-    public AccountController(AccountService accountService, PasswordEncoder passwordEncoder, RoleService roleService) {
+    public AccountController(AccountService accountService, PasswordEncoder passwordEncoder, RoleService roleService,AccountRepository accountRepository) {
         this.accountService = accountService;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
+        this.accountRepository = accountRepository;
     }
 
     @PostMapping("/account")
-    public ResponseEntity<ApiResponse<Account>> createAccount(@RequestBody @Valid Account rqAccount)
+    public ResponseEntity<ApiResponse<ResAccountDTO>> createAccount(@RequestBody @Valid Account rqAccount)
             throws AppException {
 
         boolean emailExist = accountService.checkEmailExist(rqAccount.getEmail());
@@ -57,8 +62,9 @@ public class AccountController {
         String hashPassword = passwordEncoder.encode(rqAccount.getPassword());
         rqAccount.setPassword(hashPassword);
         Account res = accountService.createAccount(rqAccount);
-        ApiResponse<Account> response = new ApiResponse<>();
-        response.setData(res);
+        ResAccountDTO responseDTO = this.accountService.convertToResAccountDTO(res);
+        ApiResponse<ResAccountDTO> response = new ApiResponse<>();
+        response.setData(responseDTO);
         response.setMessage("Tạo tài khoản thành công");
         response.setStatus(HttpStatus.CREATED.value());
 
@@ -103,15 +109,16 @@ public class AccountController {
     }
 
     @PutMapping("/account")
-    public ResponseEntity<ApiResponse<Account>> updateAccount(@Valid @RequestBody ReqUpdateAccountDTO rqAccount)
+    public ResponseEntity<ApiResponse<ResAccountDTO>> updateAccount(@Valid @RequestBody ReqUpdateAccountDTO rqAccount)
             throws AppException {
         boolean isExist = accountService.checkAccountExist(rqAccount.getId());
         if (!isExist) {
             throw new AppException("Id không tồn tại");
         }
         Account res = accountService.updateAccount(rqAccount);
-        ApiResponse<Account> response = new ApiResponse<>();
-        response.setData(res);
+        ResAccountDTO responseDTO = this.accountService.convertToResAccountDTO(res);
+        ApiResponse<ResAccountDTO> response = new ApiResponse<>();
+        response.setData(responseDTO);
         response.setMessage("Cập nhật tài khoản thành công");
         response.setStatus(HttpStatus.OK.value());
 
@@ -119,17 +126,38 @@ public class AccountController {
     }
 
     @DeleteMapping("/account/{id}")
-    public ResponseEntity<ApiResponse<Account>> deleteAccount(@PathVariable("id") Long id) throws AppException {
+    public ResponseEntity<ApiResponse<ResAccountDTO>> deleteAccount(@PathVariable("id") Long id) throws AppException {
         Account res = accountService.getAccountById(id);
         if (res == null) {
             throw new AppException("Id không tồn tại");
         }
         accountService.deleteAccount(id);
-        ApiResponse<Account> response = new ApiResponse<>();
-        response.setData(res);
+        ResAccountDTO responseDTO = this.accountService.convertToResAccountDTO(res);
+        ApiResponse<ResAccountDTO> response = new ApiResponse<>();
+        response.setData(responseDTO);
         response.setMessage("Xóa tài khoản thành công");
         response.setStatus(HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+    @PostMapping("/account/change-password")
+    public ResponseEntity<ApiResponse<ResAccountDTO>> changePassword(@RequestBody ReqChangePassword req) throws AppException {
+        Account account = accountService.getUserByEmail(req.getEmail());
+        if (account == null) {
+            throw new AppException("Tài khoản không tồn tại");
+        }
+        if (!passwordEncoder.matches(req.getOldPassword(), account.getPassword())) {
+            throw new AppException("Mật khẩu cũ không đúng");
+        }
+        account.setPassword(passwordEncoder.encode(req.getNewPassword()));
+        account = accountRepository.save(account);
+        ResAccountDTO responseDTO = this.accountService.convertToResAccountDTO(account);
+        ApiResponse<ResAccountDTO> response = new ApiResponse<>();
+        response.setData(responseDTO);
+        response.setMessage("Đổi mật khẩu thành công");
+        response.setStatus(HttpStatus.OK.value());
+        return ResponseEntity.ok(response);
     }
 
 }

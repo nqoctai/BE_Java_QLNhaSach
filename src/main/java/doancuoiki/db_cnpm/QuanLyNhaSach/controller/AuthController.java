@@ -1,5 +1,6 @@
 package doancuoiki.db_cnpm.QuanLyNhaSach.controller;
 
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqRegister;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -68,6 +69,7 @@ public class AuthController {
                                         currentAccountDB.getUsername(),
                                         currentAccountDB.getAvatar(),
                                         currentAccountDB.getPhone(),
+                                        currentAccountDB.getCart(),
                                         currentAccountDB.getRole().getName());
                         resLoginDTO.setAccount(accountLogin);
                 }
@@ -109,6 +111,7 @@ public class AuthController {
                         accountLogin.setName(currentAccountDB.getUsername());
                         accountLogin.setAvatar(currentAccountDB.getAvatar());
                         accountLogin.setPhone(currentAccountDB.getPhone());
+                        accountLogin.setCart(currentAccountDB.getCart());
                         accountLogin.setRole(currentAccountDB.getRole().getName());
                         userGetAccount.setAccount(accountLogin);
                 }
@@ -141,6 +144,7 @@ public class AuthController {
                                 currentAccountDB.getUsername(),
                                 currentAccountDB.getAvatar(),
                                 currentAccountDB.getPhone(),
+                                currentAccountDB.getCart(),
                                 currentAccountDB.getRole().getName());
                 resLoginDTO.setAccount(accountLogin);
                 String access_token = this.securityUtil.createAccessToken(email, resLoginDTO);
@@ -192,18 +196,22 @@ public class AuthController {
         }
 
         @PostMapping("/auth/register")
-        public ResponseEntity<ApiResponse<ResCreateAccountDTO>> register(@Valid @RequestBody Account rqAccount)
+        public ResponseEntity<ApiResponse<ResCreateAccountDTO>> register(@Valid @RequestBody ReqRegister rqRegister)
                         throws AppException {
-                boolean isEmailExist = this.accountService.isExistUserByEmail(rqAccount.getEmail());
+                boolean isEmailExist = this.accountService.isExistUserByEmail(rqRegister.getEmail());
                 if (isEmailExist) {
                         throw new AppException(
-                                        "Email " + rqAccount.getEmail() + "đã tồn tại, vui lòng sử dụng email khác.");
+                                        "Email " + rqRegister.getEmail() + "đã tồn tại, vui lòng sử dụng email khác.");
                 }
 
-                String hashPassword = this.passwordEncoder.encode(rqAccount.getPassword());
-                rqAccount.setPassword(hashPassword);
-                rqAccount.setRole(this.roleService.getRoleById(2));
-                Account account = this.accountService.createAccount(rqAccount);
+                String hashPassword = this.passwordEncoder.encode(rqRegister.getPassword());
+                Account account = new Account();
+                account.setEmail(rqRegister.getEmail());
+                account.setUsername(rqRegister.getUsername());
+                account.setPhone(rqRegister.getPhone());
+                account.setPassword(hashPassword);
+                account.setRole(this.roleService.getRoleById(2));
+                account = this.accountService.createAccount(account);
 
                 ResCreateAccountDTO resCreateAccountDTO = new ResCreateAccountDTO();
                 resCreateAccountDTO.setEmail(account.getEmail());

@@ -3,6 +3,7 @@ package doancuoiki.db_cnpm.QuanLyNhaSach.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Account;
+import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Cart;
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +29,7 @@ public class ResLoginDTO {
         private String name;
         private String avatar;
         private String phone;
+        private Cart cart;
         private String role;
     }
 
