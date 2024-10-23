@@ -8,4 +8,6 @@ import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Role;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
     boolean existsByName(String name);
+
+
 }

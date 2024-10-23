@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Role;
 import doancuoiki.db_cnpm.QuanLyNhaSach.repository.RoleRepository;
 
+import java.util.List;
+
 @Service
 public class RoleService {
     private final RoleRepository roleRepository;
@@ -23,5 +25,9 @@ public class RoleService {
 
     public Role createRole(Role role) {
         return roleRepository.save(role);
+    }
+
+    public List<Role> getAllRole() {
+        return roleRepository.findAll();
     }
 }

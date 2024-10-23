@@ -75,9 +75,15 @@ public class AccountService {
         if (accountDB == null) {
             throw new AppException("Account not found");
         }
+
+        if (rqAccount.getRole() != null) {
+            Role role = roleService.getRoleById(rqAccount.getRole().getId());
+            rqAccount.setRole(role);
+        }
         accountDB.setUsername(rqAccount.getUsername());
         accountDB.setPhone(rqAccount.getPhone());
         accountDB.setAvatar(rqAccount.getAvatar());
+        accountDB.setRole(rqAccount.getRole());
         return accountRepository.save(accountDB);
     }
 

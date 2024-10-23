@@ -3,17 +3,15 @@ package doancuoiki.db_cnpm.QuanLyNhaSach.controller;
 import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties.Http;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Role;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ApiResponse;
 import doancuoiki.db_cnpm.QuanLyNhaSach.services.RoleService;
 import doancuoiki.db_cnpm.QuanLyNhaSach.util.error.AppException;
 import jakarta.validation.Valid;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -39,5 +37,15 @@ public class RoleController {
         response.setStatus(HttpStatus.CREATED.value());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/role")
+    public ResponseEntity<ApiResponse<List<Role>>> getAllRole() {
+        List<Role> listRole = roleService.getAllRole();
+        ApiResponse<List<Role>> response = new ApiResponse<List<Role>>();
+        response.setData(listRole);
+        response.setMessage("Lấy danh sách role thành công");
+        response.setStatus(HttpStatus.OK.value());
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

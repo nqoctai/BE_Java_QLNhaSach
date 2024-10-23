@@ -1,5 +1,6 @@
 package doancuoiki.db_cnpm.QuanLyNhaSach.dto.request;
 
+import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,4 +11,5 @@ public class ReqUpdateAccountDTO {
     private String username;
     private String phone;
     private String avatar;
+    private Role role;
 }
