@@ -21,11 +21,22 @@ public class ResAccountDTO {
 
     private RoleAccount role;
 
+    private CustomerAccount customer;
+
     @Getter
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class RoleAccount {
+        private long id;
+        private String name;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CustomerAccount {
         private long id;
         private String name;
     }

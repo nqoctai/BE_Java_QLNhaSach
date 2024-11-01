@@ -3,6 +3,7 @@ package doancuoiki.db_cnpm.QuanLyNhaSach.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,11 +23,14 @@ import doancuoiki.db_cnpm.QuanLyNhaSach.util.error.AppException;
 public class AccountService {
     private final AccountRepository accountRepository;
 
+    private final CustomerService customerService;
+
     private final RoleService roleService;
 
-    public AccountService(AccountRepository accountRepository, RoleService roleService) {
+    public AccountService(AccountRepository accountRepository, RoleService roleService, CustomerService customerService) {
         this.accountRepository = accountRepository;
         this.roleService = roleService;
+        this.customerService = customerService;
     }
 
     public boolean checkEmailExist(String email) {
@@ -34,6 +38,10 @@ public class AccountService {
     }
 
     public Account createAccount(Account rqAccount) {
+        if(rqAccount.getCustomer() != null){
+            Customer customer = customerService.getCustomerById(rqAccount.getCustomer().getId());
+            rqAccount.setCustomer(customer);
+        }
         if (rqAccount.getRole() != null) {
             Role role = roleService.getRoleById(rqAccount.getRole().getId());
             rqAccount.setRole(role);
@@ -144,6 +152,13 @@ public class AccountService {
             roleAccount.setId(role.getId());
             roleAccount.setName(role.getName());
             res.setRole(roleAccount);
+        }
+        Customer customer = account.getCustomer();
+        if (customer != null) {
+            ResAccountDTO.CustomerAccount customerAccount = new ResAccountDTO.CustomerAccount();
+            customerAccount.setId(customer.getId());
+            customerAccount.setName(customer.getName());
+            res.setCustomer(customerAccount);
         }
         return res;
     }

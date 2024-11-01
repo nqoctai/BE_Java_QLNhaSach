@@ -44,12 +44,14 @@ public class Account {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @OneToOne(mappedBy = "account")
-    private Cart cart;
 
-    @OneToMany(mappedBy = "account")
-    @JsonIgnore
-    private List<Order> orders;
+    @OneToOne()
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
+    @OneToOne()
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
 
     @PrePersist
     public void handleBeforeCreate() {

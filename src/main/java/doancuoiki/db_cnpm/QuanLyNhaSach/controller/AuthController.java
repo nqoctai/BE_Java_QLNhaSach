@@ -69,8 +69,8 @@ public class AuthController {
                                         currentAccountDB.getUsername(),
                                         currentAccountDB.getAvatar(),
                                         currentAccountDB.getPhone(),
-                                        currentAccountDB.getCart(),
-                                        currentAccountDB.getRole().getName());
+                                        currentAccountDB.getRole().getName(),
+                                        currentAccountDB.getCustomer());
                         resLoginDTO.setAccount(accountLogin);
                 }
                 String access_token = this.securityUtil.createAccessToken(authentication.getName(), resLoginDTO);
@@ -111,7 +111,7 @@ public class AuthController {
                         accountLogin.setName(currentAccountDB.getUsername());
                         accountLogin.setAvatar(currentAccountDB.getAvatar());
                         accountLogin.setPhone(currentAccountDB.getPhone());
-                        accountLogin.setCart(currentAccountDB.getCart());
+                        accountLogin.setCustomer(currentAccountDB.getCustomer());
                         accountLogin.setRole(currentAccountDB.getRole().getName());
                         userGetAccount.setAccount(accountLogin);
                 }
@@ -144,8 +144,9 @@ public class AuthController {
                                 currentAccountDB.getUsername(),
                                 currentAccountDB.getAvatar(),
                                 currentAccountDB.getPhone(),
-                                currentAccountDB.getCart(),
-                                currentAccountDB.getRole().getName());
+                                currentAccountDB.getRole().getName(),
+                                currentAccountDB.getCustomer()
+                                );
                 resLoginDTO.setAccount(accountLogin);
                 String access_token = this.securityUtil.createAccessToken(email, resLoginDTO);
                 resLoginDTO.setAccessToken(access_token);

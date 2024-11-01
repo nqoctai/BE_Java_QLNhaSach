@@ -44,7 +44,11 @@ public class OrderService {
         if (account == null) {
             throw new AppException("Account not found");
         }
-        Cart cart = this.cartRepository.findByAccount(account);
+        Customer customer = account.getCustomer();
+        if(customer == null){
+            throw new AppException("Customer not found");
+        }
+        Cart cart = this.cartRepository.findByCustomer(customer);
         if (cart == null) {
             throw new AppException("Cart not found");
         }
@@ -53,7 +57,7 @@ public class OrderService {
             throw new AppException("Cart is empty");
         }
         Order order = new Order();
-        order.setAccount(account);
+        order.setCustomer(customer);
         order.setReceiverAddress(reqPlaceOrder.getAddress());
         order.setReceiverName(reqPlaceOrder.getName());
         order.setReceiverPhone(reqPlaceOrder.getPhone());
@@ -96,6 +100,9 @@ public class OrderService {
         if (account == null) {
             throw new AppException("Account not found");
         }
-        return this.orderRepository.findByAccount(account);
+
+        Customer customer = account.getCustomer();
+
+        return this.orderRepository.findByCustomer(customer);
     }
 }

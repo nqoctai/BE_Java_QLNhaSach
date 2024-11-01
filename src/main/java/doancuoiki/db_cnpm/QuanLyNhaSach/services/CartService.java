@@ -1,10 +1,7 @@
 package doancuoiki.db_cnpm.QuanLyNhaSach.services;
 
 
-import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Account;
-import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Book;
-import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Cart;
-import doancuoiki.db_cnpm.QuanLyNhaSach.domain.CartItem;
+import doancuoiki.db_cnpm.QuanLyNhaSach.domain.*;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqAddItemToCart;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqUpdateToCart;
 import doancuoiki.db_cnpm.QuanLyNhaSach.repository.BookRepository;
@@ -41,10 +38,12 @@ public class CartService {
         if(account == null){
             throw new AppException("Account not found");
         }
-            Cart cart = this.cartRepository.findByAccount(account);
+            Customer customer = account.getCustomer();
+            Cart cart = this.cartRepository.findByCustomer(customer);
+
             if(cart == null){
                 Cart otherCart = new Cart();
-                otherCart.setAccount(account);
+                otherCart.setCustomer(customer);
                 otherCart.setCount(0);
                 otherCart.setSumPrice(0);
 

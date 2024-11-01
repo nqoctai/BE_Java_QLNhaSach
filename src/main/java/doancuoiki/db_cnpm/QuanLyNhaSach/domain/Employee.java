@@ -2,11 +2,8 @@ package doancuoiki.db_cnpm.QuanLyNhaSach.domain;
 
 import java.time.Instant;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,5 +28,9 @@ public class Employee {
     private Instant hireDate;
 
     private double salary;
+
+    @OneToOne(mappedBy = "employee")
+    @JsonIgnore
+    private Account account;
 
 }

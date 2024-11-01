@@ -27,9 +27,9 @@ public class Cart {
 
 
     @OneToOne()
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "customer_id")
     @JsonIgnore
-    private Account account;
+    private Customer customer;
 
     @OneToMany(mappedBy = "cart")
     List<CartItem> cartItems = new ArrayList<CartItem>();

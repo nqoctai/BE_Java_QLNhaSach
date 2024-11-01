@@ -31,9 +31,10 @@ public class Order {
     private Instant createdAt;
     private Instant updatedAt;
 
+
     @ManyToOne
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems = new ArrayList<OrderItem>();
