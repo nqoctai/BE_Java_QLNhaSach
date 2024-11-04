@@ -86,6 +86,20 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/customer/{id}")
+    public ResponseEntity<ApiResponse<Customer>> getCustomerById(@PathVariable("id") long id) throws AppException {
+        boolean isExist = customerService.checkCustomerExist(id);
+        if (!isExist) {
+            throw new AppException("Id không tồn tại");
+        }
+        Customer res = customerService.getCustomerById(id);
+        ApiResponse<Customer> response = new ApiResponse<>();
+        response.setData(res);
+        response.setMessage("Lấy thông tin khách hàng thành công");
+        response.setStatus(HttpStatus.OK.value());
+        return ResponseEntity.ok(response);
+    }
+
 
 
 }

@@ -44,6 +44,10 @@ public class CustomerService {
     public Customer getCustomerById(Long id) {
         return customerRepository.findById(id).orElse(null);
     }
+
+    public Customer getCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email);
+    }
 //
 //    public List<Account> getAllAccount() {
 //        return accountRepository.findAll();

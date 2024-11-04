@@ -42,9 +42,21 @@ public class AccountService {
             Customer customer = customerService.getCustomerById(rqAccount.getCustomer().getId());
             rqAccount.setCustomer(customer);
         }
+
         if (rqAccount.getRole() != null) {
             Role role = roleService.getRoleById(rqAccount.getRole().getId());
             rqAccount.setRole(role);
+        }
+        if(rqAccount.getRole() != null)
+        {
+            if(rqAccount.getRole().getName().equals("CUSTOMER"))
+            {
+                Customer customer = this.customerService.getCustomerByEmail(rqAccount.getEmail());
+                if(customer != null)
+                {
+                    rqAccount.setCustomer(customer);
+                }
+            }
         }
         return accountRepository.save(rqAccount);
     }

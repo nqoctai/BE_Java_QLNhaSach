@@ -1,6 +1,8 @@
 package doancuoiki.db_cnpm.QuanLyNhaSach.controller;
 
+import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Customer;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqRegister;
+import doancuoiki.db_cnpm.QuanLyNhaSach.services.CustomerService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,17 +42,19 @@ public class AuthController {
         private final AccountService accountService;
         private final PasswordEncoder passwordEncoder;
         private final RoleService roleService;
+        private final CustomerService customerService;
 
         @Value("${nqoctai.jwt.refresh-token-validity-in-seconds}")
         private long refreshTokenExpiration;
 
         public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil,
-                        AccountService accountService, PasswordEncoder passwordEncoder, RoleService roleService) {
+                        AccountService accountService, PasswordEncoder passwordEncoder, RoleService roleService, CustomerService customerService) {
                 this.authenticationManagerBuilder = authenticationManagerBuilder;
                 this.securityUtil = securityUtil;
                 this.accountService = accountService;
                 this.passwordEncoder = passwordEncoder;
                 this.roleService = roleService;
+                this.customerService = customerService;
         }
 
         @PostMapping("/auth/login")
@@ -212,6 +216,14 @@ public class AuthController {
                 account.setPhone(rqRegister.getPhone());
                 account.setPassword(hashPassword);
                 account.setRole(this.roleService.getRoleById(2));
+
+                Customer customer = new Customer();
+
+                customer.setName(rqRegister.getUsername());
+                customer.setPhone(rqRegister.getPhone());
+                customer.setEmail(rqRegister.getEmail());
+                customer = this.customerService.createCustomer(customer);
+                account.setCustomer(customer);
                 account = this.accountService.createAccount(account);
 
                 ResCreateAccountDTO resCreateAccountDTO = new ResCreateAccountDTO();
