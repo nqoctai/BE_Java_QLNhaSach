@@ -18,7 +18,11 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String name;
+
+    @Column(columnDefinition = "NVARCHAR(255)")
     private String address;
     private String phone;
     private String email;

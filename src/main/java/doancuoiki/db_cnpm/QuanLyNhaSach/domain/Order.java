@@ -21,10 +21,16 @@ public class Order {
 
     private double totalPrice;
 
+    private String receiverEmail;
+
+    @Column(name = "receiver_name", columnDefinition = "nvarchar(255)")
     private String receiverName;
+
+    @Column(name = "receiver_address", columnDefinition = "nvarchar(255)")
     private String receiverAddress;
     private String receiverPhone;
-    private String status;
+
+
 
     private String createdBy;
     private String updatedBy;
@@ -38,6 +44,9 @@ public class Order {
 
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems = new ArrayList<OrderItem>();
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderShippingEvent> orderShippingEvents = new ArrayList<OrderShippingEvent>();
 
     @PrePersist
     public void handleBeforeCreate() {

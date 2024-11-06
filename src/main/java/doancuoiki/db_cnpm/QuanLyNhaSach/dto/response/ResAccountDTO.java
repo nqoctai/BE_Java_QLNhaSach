@@ -23,6 +23,8 @@ public class ResAccountDTO {
 
     private CustomerAccount customer;
 
+    private EmployeeAccount employee;
+
     @Getter
     @Setter
     @AllArgsConstructor
@@ -37,6 +39,15 @@ public class ResAccountDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CustomerAccount {
+        private long id;
+        private String name;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class EmployeeAccount {
         private long id;
         private String name;
     }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Customer;
+import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -25,12 +26,15 @@ public class AccountService {
 
     private final CustomerService customerService;
 
+    private final EmployeeService employeeService;
+
     private final RoleService roleService;
 
-    public AccountService(AccountRepository accountRepository, RoleService roleService, CustomerService customerService) {
+    public AccountService(AccountRepository accountRepository, RoleService roleService, CustomerService customerService, EmployeeService employeeService) {
         this.accountRepository = accountRepository;
         this.roleService = roleService;
         this.customerService = customerService;
+        this.employeeService = employeeService;
     }
 
     public boolean checkEmailExist(String email) {
@@ -55,6 +59,13 @@ public class AccountService {
                 if(customer != null)
                 {
                     rqAccount.setCustomer(customer);
+                }
+            }else
+            {
+                Employee employee = this.employeeService.getEmployeeByEmail(rqAccount.getEmail());
+                if(employee != null)
+                {
+                    rqAccount.setEmployee(employee);
                 }
             }
         }
@@ -171,6 +182,14 @@ public class AccountService {
             customerAccount.setId(customer.getId());
             customerAccount.setName(customer.getName());
             res.setCustomer(customerAccount);
+        }
+
+        Employee employee = account.getEmployee();
+        if (employee != null) {
+            ResAccountDTO.EmployeeAccount employeeAccount = new ResAccountDTO.EmployeeAccount();
+            employeeAccount.setId(employee.getId());
+            employeeAccount.setName(employee.getFullName());
+            res.setEmployee(employeeAccount);
         }
         return res;
     }

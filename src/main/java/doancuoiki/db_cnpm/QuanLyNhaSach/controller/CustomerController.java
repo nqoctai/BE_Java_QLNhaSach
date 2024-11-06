@@ -100,6 +100,4 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
 
-
-
 }

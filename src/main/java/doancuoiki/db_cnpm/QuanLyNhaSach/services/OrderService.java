@@ -1,6 +1,9 @@
 package doancuoiki.db_cnpm.QuanLyNhaSach.services;
 
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.*;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqCreateOderItem;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqCreateOrder;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqOrderUpdate;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqPlaceOrder;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.response.ResultPaginationDTO;
 import doancuoiki.db_cnpm.QuanLyNhaSach.repository.CartItemRepository;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -25,17 +29,70 @@ public class OrderService {
 
     private final CartRepository cartRepository;
 
+    private final BookService bookService;
+
+    private final CustomerService customerService;
+
     private final OrderItemRepository orderItemRepository;
 
     private final CartItemRepository cartItemRepository;
 
+    private final ShippingStatusService shippingStatusService;
+
+    private final OrderShippingEventService orderShippingEventService;
+
     public OrderService(OrderRepository orderRepository, AccountService accountService, CartRepository cartRepository,
-            OrderItemRepository orderItemRepository, CartItemRepository cartItemRepository) {
+            OrderItemRepository orderItemRepository, CartItemRepository cartItemRepository,
+                        BookService bookService, CustomerService customerService, ShippingStatusService shippingStatusService,
+                        OrderShippingEventService orderShippingEventService) {
         this.orderRepository = orderRepository;
         this.accountService = accountService;
         this.cartRepository = cartRepository;
         this.orderItemRepository = orderItemRepository;
         this.cartItemRepository = cartItemRepository;
+        this.bookService = bookService;
+        this.customerService = customerService;
+        this.shippingStatusService = shippingStatusService;
+        this.orderShippingEventService = orderShippingEventService;
+    }
+
+    public Order createOrder(ReqCreateOrder reqCreateOrder) {
+        Order order = new Order();
+        Customer customer = this.customerService.getCustomerByEmail(reqCreateOrder.getEmail());
+        if(customer == null){
+            customer = new Customer();
+            customer.setEmail(reqCreateOrder.getEmail());
+            customer.setPhone(reqCreateOrder.getReceiverPhone());
+            customer.setName(reqCreateOrder.getReceiverName());
+            customer.setAddress(reqCreateOrder.getReceiverAddress());
+            customer = this.customerService.createCustomer(customer);
+        }
+        order.setCustomer(customer);
+        order.setReceiverEmail(reqCreateOrder.getEmail());
+        order.setReceiverName(reqCreateOrder.getReceiverName());
+        order.setReceiverAddress(reqCreateOrder.getReceiverAddress());
+        order.setReceiverPhone(reqCreateOrder.getReceiverPhone());
+        order.setTotalPrice(reqCreateOrder.getTotalPrice());
+        ShippingStatus shippingStatus = this.shippingStatusService.getShippingStatusById(reqCreateOrder.getStatusId());
+        order = this.orderRepository.save(order);
+        OrderShippingEvent orderShippingEvent = new OrderShippingEvent();
+        orderShippingEvent.setOrder(order);
+        orderShippingEvent.setShippingStatus(shippingStatus);
+        orderShippingEvent = this.orderShippingEventService.createOrderShippingEvent(orderShippingEvent);
+        order.getOrderShippingEvents().add(orderShippingEvent);
+        for(ReqCreateOderItem item : reqCreateOrder.getOrderItems()){
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            Book book = this.bookService.getBookById(item.getBookId());
+            orderItem.setBook(book);
+            orderItem.setPrice(item.getQuantity() * book.getPrice());
+            orderItem.setQuantity(item.getQuantity());
+            orderItem = this.orderItemRepository.save(orderItem);
+            order.getOrderItems().add(orderItem);
+        }
+
+
+        return this.orderRepository.save(order);
     }
 
     @Transactional
@@ -58,12 +115,18 @@ public class OrderService {
         }
         Order order = new Order();
         order.setCustomer(customer);
+        order.setReceiverEmail(reqPlaceOrder.getEmail());
         order.setReceiverAddress(reqPlaceOrder.getAddress());
         order.setReceiverName(reqPlaceOrder.getName());
         order.setReceiverPhone(reqPlaceOrder.getPhone());
         order.setTotalPrice(reqPlaceOrder.getTotalPrice());
-        order.setStatus("PENDING");
+        ShippingStatus shippingStatus = this.shippingStatusService.getShippingStatusById(1);
         order = orderRepository.save(order);
+        OrderShippingEvent orderShippingEvent = new OrderShippingEvent();
+        orderShippingEvent.setOrder(order);
+        orderShippingEvent.setShippingStatus(shippingStatus);
+        orderShippingEvent = this.orderShippingEventService.createOrderShippingEvent(orderShippingEvent);
+        order.getOrderShippingEvents().add(orderShippingEvent);
 
         for (CartItem cartItem : cartItems) {
             OrderItem orderItem = new OrderItem();
@@ -79,7 +142,7 @@ public class OrderService {
             this.cartItemRepository.deleteById(cartItem.getId());
         }
         this.cartRepository.deleteById(cart.getId());
-        return order;
+        return orderRepository.save(order);
     }
 
     public ResultPaginationDTO fetchListOrder(Specification<Order> spec, Pageable pageable) {
@@ -104,5 +167,27 @@ public class OrderService {
         Customer customer = account.getCustomer();
 
         return this.orderRepository.findByCustomer(customer);
+    }
+
+    public Order updateOrder(ReqOrderUpdate rqOrderUpdate) throws AppException {
+        Order order = this.orderRepository.findById(rqOrderUpdate.getId()).orElse(null);
+        if(order == null){
+            throw new AppException("Order not found");
+        }
+        order.setReceiverName(rqOrderUpdate.getReceiverName());
+        order.setReceiverAddress(rqOrderUpdate.getReceiverAddress());
+        order.setReceiverPhone(rqOrderUpdate.getReceiverPhone());
+        order.setTotalPrice(rqOrderUpdate.getTotalPrice());
+        ShippingStatus shippingStatus = this.shippingStatusService.getShippingStatusById(rqOrderUpdate.getStatusId());
+        OrderShippingEvent orderShippingEvent = new OrderShippingEvent();
+        orderShippingEvent.setOrder(order);
+        orderShippingEvent.setShippingStatus(shippingStatus);
+        if(rqOrderUpdate.getNote() != null){
+            orderShippingEvent.setNote(rqOrderUpdate.getNote());
+        }
+        orderShippingEvent = this.orderShippingEventService.createOrderShippingEvent(orderShippingEvent);
+        order.getOrderShippingEvents().add(orderShippingEvent);
+        order.setCreatedAt(Instant.now());
+        return this.orderRepository.save(order);
     }
 }

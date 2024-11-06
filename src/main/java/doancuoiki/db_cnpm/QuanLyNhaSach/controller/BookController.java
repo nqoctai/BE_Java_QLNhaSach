@@ -23,6 +23,8 @@ import doancuoiki.db_cnpm.QuanLyNhaSach.services.BookService;
 import doancuoiki.db_cnpm.QuanLyNhaSach.util.error.AppException;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1")
 public class BookController {
@@ -42,10 +44,19 @@ public class BookController {
     }
 
     @GetMapping("/books")
-    public ResponseEntity<ApiResponse<ResultPaginationDTO>> getAllBook(@Filter Specification<Book> spec,
+    public ResponseEntity<ApiResponse<ResultPaginationDTO>> getAllBookWithPagination(@Filter Specification<Book> spec,
             Pageable pageable) {
         ResultPaginationDTO res = bookService.getAllBookWithPagination(spec, pageable);
         ApiResponse<ResultPaginationDTO> response = new ApiResponse<>();
+        response.setData(res);
+        response.setMessage("Lấy danh sách sách thành công");
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/booksNoPagination")
+    public ResponseEntity<ApiResponse<List<Book>>> getAllBook() {
+        List<Book> res = bookService.getAllBook();
+        ApiResponse<List<Book>> response = new ApiResponse<>();
         response.setData(res);
         response.setMessage("Lấy danh sách sách thành công");
         return ResponseEntity.ok().body(response);

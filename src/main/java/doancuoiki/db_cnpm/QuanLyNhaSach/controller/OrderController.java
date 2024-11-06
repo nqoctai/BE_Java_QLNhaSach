@@ -4,6 +4,8 @@ package doancuoiki.db_cnpm.QuanLyNhaSach.controller;
 import com.turkraft.springfilter.boot.Filter;
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Order;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ApiResponse;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqCreateOrder;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqOrderUpdate;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqPlaceOrder;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.response.ResultPaginationDTO;
 import doancuoiki.db_cnpm.QuanLyNhaSach.services.OrderService;
@@ -25,6 +27,17 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+
+    @PostMapping("/order/create")
+    public ResponseEntity<ApiResponse<Order>> createOrder(@RequestBody ReqCreateOrder rqCreateOrder)
+    {
+        Order res = orderService.createOrder(rqCreateOrder);
+        ApiResponse<Order> response = new ApiResponse<>();
+        response.setData(res);
+        response.setMessage("Create order successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
     @PostMapping("/order")
     public ResponseEntity<ApiResponse<Order>> placeOrder(@RequestBody ReqPlaceOrder reqPlaceOrder) throws AppException {
         Order order = orderService.placeOrder(reqPlaceOrder);
@@ -34,6 +47,18 @@ public class OrderController {
         apiResponse.setStatus(HttpStatus.OK.value());
         return ResponseEntity.ok(apiResponse);
     }
+
+    @PutMapping("/order")
+    public ResponseEntity<ApiResponse<Order>> updateOrder(@RequestBody ReqOrderUpdate rqOrderUpdate) throws AppException {
+        Order res = orderService.updateOrder(rqOrderUpdate);
+        ApiResponse<Order> response = new ApiResponse<>();
+        response.setData(res);
+        response.setMessage("Update order successfully");
+        response.setStatus(HttpStatus.OK.value());
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
 
     @GetMapping("/order")
     public ResponseEntity<ApiResponse<ResultPaginationDTO>> fetchListOrder(@Filter Specification<Order> spec, Pageable pageable) {

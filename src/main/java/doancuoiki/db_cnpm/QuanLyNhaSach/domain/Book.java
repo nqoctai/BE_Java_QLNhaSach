@@ -19,7 +19,6 @@ public class Book {
     private long id;
 
     private String thumbnail;
-    private List<String> slider;
 
     @Column(columnDefinition = "NVARCHAR(255)")
     private String mainText;

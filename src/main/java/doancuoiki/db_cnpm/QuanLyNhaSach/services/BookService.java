@@ -70,6 +70,8 @@ public class BookService {
         return rs;
     }
 
+
+
     public Book updateBook(long id, Book rqBook) {
         Book book = bookRepository.findById(id).orElse(null);
         if (book == null) {
@@ -78,7 +80,6 @@ public class BookService {
 
         // Cập nhật các trường cơ bản
         book.setThumbnail(rqBook.getThumbnail());
-        book.setSlider(rqBook.getSlider());
         book.setMainText(rqBook.getMainText());
         book.setAuthor(rqBook.getAuthor());
         book.setPrice(rqBook.getPrice());
@@ -124,5 +125,9 @@ public class BookService {
 
     public Book getBookById(Long id) {
         return bookRepository.findById(id).orElse(null);
+    }
+
+    public List<Book> getAllBook() {
+        return bookRepository.findAll();
     }
 }
