@@ -1,9 +1,12 @@
 package doancuoiki.db_cnpm.QuanLyNhaSach.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import doancuoiki.db_cnpm.QuanLyNhaSach.util.SecurityUtil;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "supplies")
@@ -16,6 +19,11 @@ public class Supply {
 
     private double supplyPrice;
 
+    private Instant createdAt;
+    private Instant updatedAt;
+    private String createdBy;
+    private String updatedBy;
+
     @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
@@ -24,5 +32,23 @@ public class Supply {
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 
+
+    @PrePersist
+    public void handleBeforeCreate() {
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+
+        this.createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void handleBeforeUpdate() {
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+
+        this.updatedAt = Instant.now();
+    }
 
 }

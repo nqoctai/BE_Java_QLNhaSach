@@ -34,7 +34,7 @@ public class ImportReceiptController {
             apiResponse.setData(importReceipt);
             apiResponse.setMessage("Create import receipt successfully");
             apiResponse.setStatus(HttpStatus.CREATED.value());
-            return ResponseEntity.ok(apiResponse);
+            return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
         }
 
         @GetMapping("/receipts")
