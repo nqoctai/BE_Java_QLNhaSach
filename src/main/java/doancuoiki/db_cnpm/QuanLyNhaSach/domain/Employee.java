@@ -2,6 +2,7 @@ package doancuoiki.db_cnpm.QuanLyNhaSach.domain;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import doancuoiki.db_cnpm.QuanLyNhaSach.util.SecurityUtil;
@@ -46,6 +47,10 @@ public class Employee {
 
     @ManyToOne
     private Role role;
+
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ImportReceipt> importReceipts;
 
     @PrePersist
     public void handleBeforeCreate() {

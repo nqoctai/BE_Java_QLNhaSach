@@ -5,7 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReqCreateOderItem {
-    private long bookId;
+public class ReqCreateImportReceiptItem {
+    private Long supplierId;
+    private Long bookId;
     private int quantity;
+
+    private double totalPrice;
 }

@@ -41,7 +41,7 @@ public class AccountService {
         return accountRepository.existsByEmail(email);
     }
 
-    public Account createAccount(Account rqAccount) {
+    public Account createAccount(Account rqAccount) throws AppException {
         if(rqAccount.getCustomer() != null){
             Customer customer = customerService.getCustomerById(rqAccount.getCustomer().getId());
             rqAccount.setCustomer(customer);
@@ -60,12 +60,15 @@ public class AccountService {
                 {
                     rqAccount.setCustomer(customer);
                 }
-            }else
+            }else if(!rqAccount.getRole().getName().equals("ADMIN"))
             {
                 Employee employee = this.employeeService.getEmployeeByEmail(rqAccount.getEmail());
                 if(employee != null)
                 {
                     rqAccount.setEmployee(employee);
+                }else
+                {
+                    throw new AppException("Nhân viên không tồn tại, vui lòng tạo nhân viên trước");
                 }
             }
         }

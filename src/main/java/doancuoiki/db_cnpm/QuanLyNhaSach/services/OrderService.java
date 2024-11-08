@@ -41,6 +41,8 @@ public class OrderService {
 
     private final OrderShippingEventService orderShippingEventService;
 
+
+
     public OrderService(OrderRepository orderRepository, AccountService accountService, CartRepository cartRepository,
             OrderItemRepository orderItemRepository, CartItemRepository cartItemRepository,
                         BookService bookService, CustomerService customerService, ShippingStatusService shippingStatusService,
@@ -56,7 +58,7 @@ public class OrderService {
         this.orderShippingEventService = orderShippingEventService;
     }
 
-    public Order createOrder(ReqCreateOrder reqCreateOrder) {
+    public Order createOrder(ReqCreateOrder reqCreateOrder) throws AppException {
         Order order = new Order();
         Customer customer = this.customerService.getCustomerByEmail(reqCreateOrder.getEmail());
         if(customer == null){
@@ -84,6 +86,21 @@ public class OrderService {
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             Book book = this.bookService.getBookById(item.getBookId());
+            if(book == null){
+                throw new AppException("Book not found");
+            }else{
+                if(book.getQuantity() < item.getQuantity()){
+                    List<OrderShippingEvent> orderShippingEvents = order.getOrderShippingEvents();
+                    for(OrderShippingEvent orderShippingEvent1 : orderShippingEvents){
+                        this.orderShippingEventService.deleteOrderShippingEvent(orderShippingEvent1.getId());
+                    }
+                    orderRepository.delete(order);
+                    throw new AppException("Not enough book quantity");
+                }
+            }
+            book.setSold(book.getSold() + item.getQuantity());
+            book.setQuantity(book.getQuantity() - item.getQuantity());
+            book = this.bookService.updateBook(book.getId(), book);
             orderItem.setBook(book);
             orderItem.setPrice(item.getQuantity() * book.getPrice());
             orderItem.setQuantity(item.getQuantity());
@@ -134,6 +151,18 @@ public class OrderService {
             orderItem.setBook(cartItem.getBook());
             orderItem.setPrice(cartItem.getPrice());
             orderItem.setQuantity(cartItem.getQuantity());
+            Book book = cartItem.getBook();
+            if(book.getQuantity() < cartItem.getQuantity()){
+                List<OrderShippingEvent> orderShippingEvents = order.getOrderShippingEvents();
+                for(OrderShippingEvent orderShippingEvent1 : orderShippingEvents){
+                    this.orderShippingEventService.deleteOrderShippingEvent(orderShippingEvent1.getId());
+                }
+                orderRepository.delete(order);
+                throw new AppException("Not enough book quantity");
+            }
+            book.setSold(book.getSold() + cartItem.getQuantity());
+            book.setQuantity(book.getQuantity() - cartItem.getQuantity());
+            bookService.updateBook(book.getId(), book);
             orderItem = this.orderItemRepository.save(orderItem);
             order.getOrderItems().add(orderItem);
         }
@@ -174,10 +203,6 @@ public class OrderService {
         if(order == null){
             throw new AppException("Order not found");
         }
-        order.setReceiverName(rqOrderUpdate.getReceiverName());
-        order.setReceiverAddress(rqOrderUpdate.getReceiverAddress());
-        order.setReceiverPhone(rqOrderUpdate.getReceiverPhone());
-        order.setTotalPrice(rqOrderUpdate.getTotalPrice());
         ShippingStatus shippingStatus = this.shippingStatusService.getShippingStatusById(rqOrderUpdate.getStatusId());
         OrderShippingEvent orderShippingEvent = new OrderShippingEvent();
         orderShippingEvent.setOrder(order);
@@ -187,7 +212,7 @@ public class OrderService {
         }
         orderShippingEvent = this.orderShippingEventService.createOrderShippingEvent(orderShippingEvent);
         order.getOrderShippingEvents().add(orderShippingEvent);
-        order.setCreatedAt(Instant.now());
+        order.setUpdatedAt(Instant.now());
         return this.orderRepository.save(order);
     }
 }

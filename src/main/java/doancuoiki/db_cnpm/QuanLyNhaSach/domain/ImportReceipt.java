@@ -1,35 +1,26 @@
 package doancuoiki.db_cnpm.QuanLyNhaSach.domain;
 
-import java.util.List;
-import java.time.Instant;
 
 import doancuoiki.db_cnpm.QuanLyNhaSach.util.SecurityUtil;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Table(name = "books")
+@Table(name = "import_receipts")
 @Getter
 @Setter
-public class Book {
+public class ImportReceipt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String thumbnail;
-
-    @Column(columnDefinition = "NVARCHAR(255)")
-    private String mainText;
-    @Column(columnDefinition = "NVARCHAR(255)")
-    private String author;
-
-    private double price;
-
-    private int sold;
-
-    private int quantity;
+    private double totalAmount;
 
     private Instant createdAt;
     private Instant updatedAt;
@@ -37,14 +28,12 @@ public class Book {
     private String updatedBy;
 
 
+    @OneToMany(mappedBy = "importReceipt", fetch = FetchType.LAZY)
+    private List<ImportReceiptDetail> importReceiptDetails = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-
-    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
-    private List<BookImage> bookImages;
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
 
     @PrePersist
     public void handleBeforeCreate() {
@@ -63,5 +52,4 @@ public class Book {
 
         this.updatedAt = Instant.now();
     }
-
 }

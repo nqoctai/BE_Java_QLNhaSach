@@ -16,4 +16,14 @@ public class OrderShippingEventService {
     public OrderShippingEvent createOrderShippingEvent(OrderShippingEvent orderShippingEvent) {
         return orderShippingEventRepository.save(orderShippingEvent);
     }
+
+    public OrderShippingEvent deleteOrderShippingEvent(Long id) {
+        OrderShippingEvent orderShippingEvent = orderShippingEventRepository.findById(id).orElse(null);
+        if(orderShippingEvent != null) {
+            orderShippingEventRepository.delete(orderShippingEvent);
+        }
+        return orderShippingEvent;
+    }
+
+
 }

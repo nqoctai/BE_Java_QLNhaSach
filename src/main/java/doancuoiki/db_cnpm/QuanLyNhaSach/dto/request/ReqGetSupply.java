@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReqCreateOderItem {
-    private long bookId;
-    private int quantity;
+public class ReqGetSupply {
+    private Long supplierID;
+    private Long bookID;
 }

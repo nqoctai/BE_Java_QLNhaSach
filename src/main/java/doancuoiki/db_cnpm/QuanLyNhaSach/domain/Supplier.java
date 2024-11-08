@@ -1,30 +1,26 @@
 package doancuoiki.db_cnpm.QuanLyNhaSach.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
-@Table(name = "cart_items")
+@Table(name = "suppliers")
 @Getter
 @Setter
-public class CartItem {
+public class Supplier {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private int quantity;
+    @Column(columnDefinition = "NVARCHAR(255)")
+    private String name;
 
-    private double price;
-
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
+    @OneToMany(mappedBy = "supplier", fetch = FetchType.LAZY)
     @JsonIgnore
-    private Cart cart;
-
-    @ManyToOne
-    @JoinColumn(name = "book_id")
-    private Book book;
+    private List<Supply> supplies;
 }

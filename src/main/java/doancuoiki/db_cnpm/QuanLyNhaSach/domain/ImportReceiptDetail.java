@@ -7,24 +7,26 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "cart_items")
+@Table(name = "import_receipt_details")
 @Getter
 @Setter
-public class CartItem {
+public class ImportReceiptDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @ManyToOne
+    @JoinColumn(name = "import_receipt_id")
+    @JsonIgnore
+    private ImportReceipt importReceipt;
+
+    @ManyToOne
+    @JoinColumn(name = "supply_id")
+    private Supply supply;
+
     private int quantity;
 
-    private double price;
+    private double totalPrice;
 
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
-    @JsonIgnore
-    private Cart cart;
 
-    @ManyToOne
-    @JoinColumn(name = "book_id")
-    private Book book;
 }

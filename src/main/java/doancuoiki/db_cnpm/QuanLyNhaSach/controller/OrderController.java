@@ -29,7 +29,7 @@ public class OrderController {
 
 
     @PostMapping("/order/create")
-    public ResponseEntity<ApiResponse<Order>> createOrder(@RequestBody ReqCreateOrder rqCreateOrder)
+    public ResponseEntity<ApiResponse<Order>> createOrder(@RequestBody ReqCreateOrder rqCreateOrder) throws AppException
     {
         Order res = orderService.createOrder(rqCreateOrder);
         ApiResponse<Order> response = new ApiResponse<>();
