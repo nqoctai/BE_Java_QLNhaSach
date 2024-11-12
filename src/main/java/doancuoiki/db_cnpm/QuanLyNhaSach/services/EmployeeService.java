@@ -62,7 +62,7 @@ public class EmployeeService {
             throw new AppException("Account not found");
         }
         boolean checkEmail = employeeRepository.existsByEmail(rqEmployee.getEmail());
-        if (checkEmail) {
+        if (checkEmail && !employeeDB.getEmail().equals(rqEmployee.getEmail())) {
             throw new AppException("Email đã tồn tại");
         }
         employeeDB.setFullName(rqEmployee.getFullName());

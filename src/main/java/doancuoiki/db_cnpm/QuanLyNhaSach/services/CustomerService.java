@@ -72,7 +72,7 @@ public class CustomerService {
             throw new AppException("Account not found");
         }
         boolean checkEmail = customerRepository.existsByEmail(rqCustomer.getEmail());
-        if (checkEmail) {
+        if (checkEmail && !customerDB.getEmail().equals(rqCustomer.getEmail())) {
             throw new AppException("Email đã tồn tại");
         }
         customerDB.setName(rqCustomer.getName());

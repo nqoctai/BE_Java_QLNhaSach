@@ -114,6 +114,12 @@ public class AccountService {
             Role role = roleService.getRoleById(rqAccount.getRole().getId());
             rqAccount.setRole(role);
         }
+
+        boolean isExist = accountRepository.existsByEmail(rqAccount.getEmail());
+        if (isExist && !accountDB.getEmail().equals(rqAccount.getEmail())) {
+            throw new AppException("Email đã tồn tại");
+        }
+        accountDB.setEmail(rqAccount.getEmail());
         accountDB.setUsername(rqAccount.getUsername());
         accountDB.setPhone(rqAccount.getPhone());
         accountDB.setAvatar(rqAccount.getAvatar());
