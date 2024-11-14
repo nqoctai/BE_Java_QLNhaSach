@@ -53,8 +53,8 @@ public class SecurityConfiguaration {
         String[] whiteList = {
                 "/",
                 "/api/v1/auth/login", "/api/v1/auth/refresh", "/api/v1/auth/register",
-                "/test", "/storage/**", "/books"
-                // "/api/v1/account"
+                "/test", "/storage/**", "/api/v1/books", "/api/v1/files", "/api/v1/categories",
+                "/api/v1/account", "/api/v1/book/**"
         };
 
         http

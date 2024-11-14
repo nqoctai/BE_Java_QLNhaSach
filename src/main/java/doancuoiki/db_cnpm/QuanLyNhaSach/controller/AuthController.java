@@ -1,6 +1,7 @@
 package doancuoiki.db_cnpm.QuanLyNhaSach.controller;
 
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Customer;
+import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Role;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqRegister;
 import doancuoiki.db_cnpm.QuanLyNhaSach.services.CustomerService;
 import org.springframework.beans.factory.annotation.Value;
@@ -215,7 +216,11 @@ public class AuthController {
                 account.setUsername(rqRegister.getUsername());
                 account.setPhone(rqRegister.getPhone());
                 account.setPassword(hashPassword);
-                account.setRole(this.roleService.getRoleById(2));
+                Role role = roleService.getRoleByName("CUSTOMER");
+                if(role == null){
+                        throw new AppException("Role không tồn tại");
+                }
+                account.setRole(role);
 
                 Customer customer = new Customer();
 

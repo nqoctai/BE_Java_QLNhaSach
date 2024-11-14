@@ -1,56 +1,53 @@
 package doancuoiki.db_cnpm.QuanLyNhaSach.domain;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import doancuoiki.db_cnpm.QuanLyNhaSach.util.SecurityUtil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "employees")
-@Setter
-@Getter
-public class Employee {
+import java.time.Instant;
+import java.util.List;
 
+@Entity
+@Table(name = "permissions")
+@Getter
+@Setter
+@NoArgsConstructor
+public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "Họ và tên không được để trống")
-    @Column(name = "full_name", columnDefinition = "nvarchar(255)")
-    private String fullName;
+    @NotBlank(message = "name không được để trống")
+    private String name;
 
-    @NotBlank(message = "Email không được để trống")
-    private String email;
+    @NotBlank(message = "apiPath không được để trống")
+    private String apiPath;
 
-    @Column(name = "address", columnDefinition = "nvarchar(255)")
-    private String address;
+    @NotBlank(message = "method không được để trống")
+    private String method;
 
-    private String phone;
-    private LocalDate hireDate;
-
-    private double salary;
+    @NotBlank(message = "module không được để trống")
+    private String module;
 
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
 
-    @OneToOne(mappedBy = "employee")
-    @JsonIgnoreProperties(value = { "employee" })
-    private Account account;
+    public Permission(String name, String apiPath, String method, String module) {
+        this.name = name;
+        this.apiPath = apiPath;
+        this.method = method;
+        this.module = module;
+    }
 
-
-
-    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissions")
     @JsonIgnore
-    private List<ImportReceipt> importReceipts;
+    private List<Role> roles;
 
     @PrePersist
     public void handleBeforeCreate() {
@@ -69,5 +66,4 @@ public class Employee {
 
         this.updatedAt = Instant.now();
     }
-
 }

@@ -32,10 +32,7 @@ public class EmployeeService {
     }
 
     public Employee createEmployee(Employee rqEmployee) {
-        if (rqEmployee.getRole() != null) {
-            Role role = roleService.getRoleById(rqEmployee.getRole().getId());
-            rqEmployee.setRole(role);
-        }
+
         return employeeRepository.save(rqEmployee);
     }
 
@@ -72,10 +69,7 @@ public class EmployeeService {
         employeeDB.setSalary(rqEmployee.getSalary());
         employeeDB.setHireDate(rqEmployee.getHireDate());
 
-        if (rqEmployee.getRole() != null) {
-            Role role = roleService.getRoleById(rqEmployee.getRole().getId());
-            employeeDB.setRole(role);
-        }
+
 
         return employeeRepository.save(employeeDB);
     }

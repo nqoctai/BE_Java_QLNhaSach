@@ -3,6 +3,7 @@ package doancuoiki.db_cnpm.QuanLyNhaSach.util;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import doancuoiki.db_cnpm.QuanLyNhaSach.util.error.PermissionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -50,4 +51,16 @@ public class GlobalException {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
+
+     @ExceptionHandler(value = {
+     PermissionException.class,
+     })
+     public ResponseEntity<ApiResponse<Object>>
+     handlePermissionException(Exception ex) {
+         ApiResponse<Object> res = new ApiResponse<Object>();
+     res.setStatus(HttpStatus.FORBIDDEN.value());
+     res.setError("Forbidden");
+     res.setMessage(ex.getMessage());
+     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(res);
+     }
 }
