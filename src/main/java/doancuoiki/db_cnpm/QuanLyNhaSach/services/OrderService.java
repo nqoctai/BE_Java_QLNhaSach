@@ -1,10 +1,7 @@
 package doancuoiki.db_cnpm.QuanLyNhaSach.services;
 
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.*;
-import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqCreateOderItem;
-import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqCreateOrder;
-import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqOrderUpdate;
-import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqPlaceOrder;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.*;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.response.ResultPaginationDTO;
 import doancuoiki.db_cnpm.QuanLyNhaSach.repository.CartItemRepository;
 import doancuoiki.db_cnpm.QuanLyNhaSach.repository.CartRepository;
@@ -217,5 +214,9 @@ public class OrderService {
         order.getOrderShippingEvents().add(orderShippingEvent);
         order.setUpdatedAt(Instant.now());
         return this.orderRepository.save(order);
+    }
+
+    public List<ReqMonthkyRevenue> getMonthlyRevenueByYear(int year) {
+        return orderRepository.findMonthlyRevenueByYear(year);
     }
 }
