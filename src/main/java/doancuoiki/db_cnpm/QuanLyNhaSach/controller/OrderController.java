@@ -70,8 +70,8 @@ public class OrderController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/order/history/{accountId}")
-    public ResponseEntity<ApiResponse<List<Order>>> getHistoryOrder(@PathVariable("accountId") Long accountId) throws AppException {
+    @GetMapping("/order/history/{id}")
+    public ResponseEntity<ApiResponse<List<Order>>> getHistoryOrder(@PathVariable("id") Long accountId) throws AppException {
         List<Order> orders = orderService.getHistoryOrder(accountId);
         ApiResponse<List<Order>> apiResponse = new ApiResponse<List<Order>>();
         apiResponse.setData(orders);

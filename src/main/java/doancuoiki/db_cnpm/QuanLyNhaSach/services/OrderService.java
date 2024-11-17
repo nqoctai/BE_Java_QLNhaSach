@@ -98,9 +98,6 @@ public class OrderService {
                     throw new AppException("Not enough book quantity");
                 }
             }
-            book.setSold(book.getSold() + item.getQuantity());
-            book.setQuantity(book.getQuantity() - item.getQuantity());
-            book = this.bookService.updateBook(book.getId(), book);
             orderItem.setBook(book);
             orderItem.setPrice(item.getQuantity() * book.getPrice());
             orderItem.setQuantity(item.getQuantity());
@@ -160,9 +157,6 @@ public class OrderService {
                 orderRepository.delete(order);
                 throw new AppException("Not enough book quantity");
             }
-            book.setSold(book.getSold() + cartItem.getQuantity());
-            book.setQuantity(book.getQuantity() - cartItem.getQuantity());
-            bookService.updateBook(book.getId(), book);
             orderItem = this.orderItemRepository.save(orderItem);
             order.getOrderItems().add(orderItem);
         }
@@ -207,6 +201,15 @@ public class OrderService {
         OrderShippingEvent orderShippingEvent = new OrderShippingEvent();
         orderShippingEvent.setOrder(order);
         orderShippingEvent.setShippingStatus(shippingStatus);
+        if(shippingStatus.getStatus().equals("Hoàn thành")){
+            List<OrderItem> orderItems = order.getOrderItems();
+            for(OrderItem orderItem : orderItems){
+                Book book = orderItem.getBook();
+                book.setQuantity(book.getQuantity() - orderItem.getQuantity());
+                book.setSold(book.getSold() + orderItem.getQuantity());
+                this.bookService.updateBook(book.getId(), book);
+            }
+        }
         if(rqOrderUpdate.getNote() != null){
             orderShippingEvent.setNote(rqOrderUpdate.getNote());
         }

@@ -27,9 +27,9 @@ public class Book {
 
     private double price;
 
-    private int sold;
+    private long sold;
 
-    private int quantity;
+    private long quantity;
 
     private Instant createdAt;
     private Instant updatedAt;
