@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.BookImage;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ViewDB.SoldBookDTO;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ViewDB.View6DTO;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ViewDB.View7DTO;
 import doancuoiki.db_cnpm.QuanLyNhaSach.repository.BookImageRepository;
 import doancuoiki.db_cnpm.QuanLyNhaSach.util.error.AppException;
 import org.springframework.data.domain.Page;
@@ -129,6 +132,47 @@ public class BookService {
 
     public List<Book> getAllBook() {
         return bookRepository.findAll();
+    }
+
+    public List<SoldBookDTO> getBooksSoldWithinPeriod(String startDate, String endDate) {
+        List<Object[]> results = bookRepository.getBooksSoldWithinPeriod(startDate, endDate);
+        List<SoldBookDTO> soldBooks = new ArrayList<>();
+
+        for (Object[] row : results) {
+            SoldBookDTO book = new SoldBookDTO();
+            book.setBookID(((Number) row[0]).longValue());
+            book.setBookName((String) row[1]);
+            book.setTotalQuantity(((Number) row[2]).longValue());
+            soldBooks.add(book);
+        }
+
+        return soldBooks;
+    }
+
+    public List<View7DTO> getTop5BooksSold() {
+        List<Object[]> results = bookRepository.getView7();
+        List<View7DTO> view7s = new ArrayList<>();
+
+        for (Object[] row : results) {
+            View7DTO view7 = new View7DTO();
+            view7.setBookID(((Number) row[0]).longValue());
+            view7.setBookTitle((String) row[1]);
+            view7.setTotalQuantitySold(((Number) row[2]).longValue());
+            view7s.add(view7);
+        }
+        return view7s;
+    }
+
+    public View6DTO getView6Data() {
+        Object[] rawData = (Object[]) bookRepository.getView6Data();
+
+        // Ánh xạ dữ liệu từ Object[] vào View6DTO
+        Long tongSoLuongKhachHang = ((Number) rawData[0]).longValue();
+        Long tongSoLuongDatHangThanhCong = ((Number) rawData[1]).longValue();
+        Long tongSoLuongSach = ((Number) rawData[2]).longValue();
+        Long tongSoLuongNhanVien = ((Number) rawData[3]).longValue();
+
+        return new View6DTO(tongSoLuongKhachHang, tongSoLuongDatHangThanhCong, tongSoLuongSach, tongSoLuongNhanVien);
     }
 
 

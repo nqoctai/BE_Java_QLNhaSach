@@ -117,7 +117,7 @@ public class SupplyService {
         }
 
         boolean checkExistSupplierAndBook = supplyRepository.existsBySupplierAndBook(supplier,book );
-        if(checkExistSupplierAndBook)
+        if(checkExistSupplierAndBook && supply1.getBook().getId()!=book.getId() && supply1.getSupplier().getId()!=supplier.getId())
         {
             throw new AppException("Supply already exists");
         }

@@ -4,6 +4,9 @@ package doancuoiki.db_cnpm.QuanLyNhaSach.services;
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Account;
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Customer;
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Role;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ViewDB.TopCustomerDTO;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ViewDB.View7DTO;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ViewDB.View9DTO;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqUpdateAccountDTO;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.response.ResAccountDTO;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.response.ResCreateAccountDTO;
@@ -17,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,6 +83,8 @@ public class CustomerService {
         customerDB.setPhone(rqCustomer.getPhone());
         customerDB.setAddress(rqCustomer.getAddress());
         customerDB.setEmail(rqCustomer.getEmail());
+        customerDB.setBirthday(rqCustomer.getBirthday());
+        customerDB.setGender(rqCustomer.getGender());
         return customerRepository.save(customerDB);
     }
 //
@@ -142,4 +148,37 @@ public class CustomerService {
 //        }
 //        return res;
 //    }
+
+
+
+    public List<TopCustomerDTO> getTop5Customers() {
+        List<Object[]> results = customerRepository.getTop5Customers();
+        List<TopCustomerDTO> topCustomers = new ArrayList<>();
+
+        for (Object[] row : results) {
+            TopCustomerDTO customer = new TopCustomerDTO();
+            customer.setMaKH(((Number) row[0]).longValue());
+            customer.setTenKH((String) row[1]);
+            customer.setEmail((String) row[2]);
+            customer.setSdt((String) row[3]);
+            customer.setChiPhi(((Number) row[4]).doubleValue());
+            topCustomers.add(customer);
+        }
+
+        return topCustomers;
+    }
+
+    public List<View9DTO> getView9Data() {
+        List<Object[]> rawData = customerRepository.getView9Data();
+        List<View9DTO> result = new ArrayList<>();
+
+        for (Object[] row : rawData) {
+            String gender = (String) row[0]; // Cột "gender"
+            Long genderCount = ((Number) row[1]).longValue(); // Cột "gender_count"
+            Double percentage = ((Number) row[2]).doubleValue(); // Cột "percentage"
+            result.add(new View9DTO(gender, genderCount, percentage));
+        }
+
+        return result;
+    }
 }

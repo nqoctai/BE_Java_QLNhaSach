@@ -1,17 +1,12 @@
 package doancuoiki.db_cnpm.QuanLyNhaSach.controller;
 
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ViewDB.SoldBookDTO;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ViewDB.View7DTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.turkraft.springfilter.boot.Filter;
 
@@ -85,7 +80,7 @@ public class BookController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/book/{id}")
+    @GetMapping("/books/{id}")
     public ResponseEntity<ApiResponse<Book>> getBookById(@PathVariable("id") Long id) throws AppException {
         boolean checkBookExist = bookService.checkBookExist(id);
         if (!checkBookExist) {
@@ -98,6 +93,20 @@ public class BookController {
         response.setStatus(HttpStatus.OK.value());
         return ResponseEntity.ok().body(response);
     }
+
+    @GetMapping("/sold-books")
+    public ResponseEntity<ApiResponse<List<SoldBookDTO>>> getBooksSold(@RequestParam String startDate, @RequestParam String endDate) {
+        List<SoldBookDTO> res = bookService.getBooksSoldWithinPeriod(startDate, endDate);
+        ApiResponse<List<SoldBookDTO>> response = new ApiResponse<>();
+        response.setData(res);
+        response.setMessage("Lấy danh sách sách bán được thành công");
+        response.setStatus(HttpStatus.OK.value());
+        return ResponseEntity.ok().body(response);
+    }
+
+
+
+
 
 
 }

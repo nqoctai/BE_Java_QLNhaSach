@@ -5,11 +5,14 @@ import com.turkraft.springfilter.boot.Filter;
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Account;
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.Customer;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ApiResponse;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ViewDB.InvoiceDTO;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ViewDB.TopCustomerDTO;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqChangePassword;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.ReqUpdateAccountDTO;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.response.ResAccountDTO;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.response.ResultPaginationDTO;
 import doancuoiki.db_cnpm.QuanLyNhaSach.services.CustomerService;
+import doancuoiki.db_cnpm.QuanLyNhaSach.services.OrderService;
 import doancuoiki.db_cnpm.QuanLyNhaSach.util.error.AppException;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -18,13 +21,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1")
 public class CustomerController {
     private final CustomerService customerService;
 
-    public CustomerController(CustomerService customerService) {
+    private final OrderService orderService;
+
+    public CustomerController(CustomerService customerService,OrderService orderService) {
         this.customerService = customerService;
+        this.orderService = orderService;
     }
 
 
@@ -97,6 +105,25 @@ public class CustomerController {
         response.setData(res);
         response.setMessage("Lấy thông tin khách hàng thành công");
         response.setStatus(HttpStatus.OK.value());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/top5-customers")
+    public ResponseEntity<ApiResponse<List<TopCustomerDTO>>> getTop5Customers() {
+        List<TopCustomerDTO> res = customerService.getTop5Customers();
+        ApiResponse<List<TopCustomerDTO>> response = new ApiResponse<>();
+        response.setData(res);
+        response.setMessage("Lấy top 5 khách hàng thành công");
+        response.setStatus(HttpStatus.OK.value());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/customers/{customerId}/invoices")
+    public ResponseEntity<ApiResponse<List<InvoiceDTO>>> getInvoicesByCustomerId(@PathVariable Long customerId) {
+        ApiResponse<List<InvoiceDTO>> response = new ApiResponse<>();
+        response.setMessage("Lấy danh sách hóa đơn thành công");
+        response.setStatus(HttpStatus.OK.value());
+        response.setData(orderService.getInvoicesByCustomerId(customerId));
         return ResponseEntity.ok(response);
     }
 

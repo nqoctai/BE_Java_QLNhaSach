@@ -1,6 +1,7 @@
 package doancuoiki.db_cnpm.QuanLyNhaSach.services;
 
 import doancuoiki.db_cnpm.QuanLyNhaSach.domain.*;
+import doancuoiki.db_cnpm.QuanLyNhaSach.dto.ViewDB.InvoiceDTO;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.request.*;
 import doancuoiki.db_cnpm.QuanLyNhaSach.dto.response.ResultPaginationDTO;
 import doancuoiki.db_cnpm.QuanLyNhaSach.repository.CartItemRepository;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -95,6 +97,8 @@ public class OrderService {
                     throw new AppException("Not enough book quantity");
                 }
             }
+            book.setQuantity(book.getQuantity() - item.getQuantity());
+            book = this.bookService.updateBook(book.getId(), book);
             orderItem.setBook(book);
             orderItem.setPrice(item.getQuantity() * book.getPrice());
             orderItem.setQuantity(item.getQuantity());
@@ -154,6 +158,8 @@ public class OrderService {
                 orderRepository.delete(order);
                 throw new AppException("Not enough book quantity");
             }
+            book.setQuantity(book.getQuantity() - cartItem.getQuantity());
+            book = this.bookService.updateBook(book.getId(), book);
             orderItem = this.orderItemRepository.save(orderItem);
             order.getOrderItems().add(orderItem);
         }
@@ -202,8 +208,14 @@ public class OrderService {
             List<OrderItem> orderItems = order.getOrderItems();
             for(OrderItem orderItem : orderItems){
                 Book book = orderItem.getBook();
-                book.setQuantity(book.getQuantity() - orderItem.getQuantity());
                 book.setSold(book.getSold() + orderItem.getQuantity());
+                this.bookService.updateBook(book.getId(), book);
+            }
+        }else if(shippingStatus.getStatus().equals("Hủy bỏ")){
+            List<OrderItem> orderItems = order.getOrderItems();
+            for(OrderItem orderItem : orderItems){
+                Book book = orderItem.getBook();
+                book.setQuantity(book.getQuantity() + orderItem.getQuantity());
                 this.bookService.updateBook(book.getId(), book);
             }
         }
@@ -218,5 +230,24 @@ public class OrderService {
 
     public List<ReqMonthkyRevenue> getMonthlyRevenueByYear(int year) {
         return orderRepository.findMonthlyRevenueByYear(year);
+    }
+
+    public List<InvoiceDTO> getInvoicesByCustomerId(Long customerId) {
+        List<Object[]> results = orderRepository.getInvoicesByCustomerId(customerId);
+        List<InvoiceDTO> invoices = new ArrayList<>();
+
+        for (Object[] row : results) {
+            InvoiceDTO invoice = new InvoiceDTO();
+            invoice.setId(((Number) row[0]).longValue());
+            invoice.setCreatedAt(((String) row[1].toString()));
+            invoice.setReceiverName((String) row[2]);
+            invoice.setReceiverAddress((String) row[3]);
+            invoice.setReceiverPhone((String) row[4]);
+            invoice.setReceiverEmail((String) row[5]);
+            invoice.setTotalPrice(((Number) row[6]).doubleValue());
+            invoices.add(invoice);
+        }
+
+        return invoices;
     }
 }

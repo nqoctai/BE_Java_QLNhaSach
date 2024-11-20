@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -26,6 +27,11 @@ public class Customer {
     private String address;
     private String phone;
     private String email;
+
+    private LocalDate birthday;
+
+    @Column(columnDefinition = "NVARCHAR(255)")
+    private String gender;
 
     private Instant createdAt;
     private Instant updatedAt;

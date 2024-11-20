@@ -22,7 +22,6 @@ public class Cart {
     @Min(value = 0)
     private int count;
 
-    @Min(value = 0)
     private double sumPrice;
 
 

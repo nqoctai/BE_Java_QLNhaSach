@@ -53,13 +53,15 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Create a book", "/api/v1/book", "POST", "BOOKS"));
             arr.add(new Permission("Update a book", "/api/v1/book/{id}", "PUT", "BOOKS"));
             arr.add(new Permission("Delete a book", "/api/v1/book/{id}", "DELETE", "BOOKS"));
-            arr.add(new Permission("Get a book by id", "/api/v1/book/{id}", "GET", "BOOKS"));
+            arr.add(new Permission("Get a book by id", "/api/v1/books/{id}", "GET", "BOOKS"));
             arr.add(new Permission("Get book with pagination", "/api/v1/books", "GET", "BOOKS"));
             arr.add(new Permission("Get book no pagination", "/api/v1/booksNoPagination", "GET", "BOOKS"));
+            arr.add(new Permission("Revuene book are placed", "/api/v1/sold-books", "GET", "BOOKS"));
+
 
             arr.add(new Permission("Add item to cart", "/api/v1/cart/add", "POST", "CARTS"));
             arr.add(new Permission("Delete item from cart", "/api/v1/cart/delete/{id}", "DELETE", "CARTS"));
-            arr.add(new Permission("Update item", "/api/v1/cart/update", "PUT", "CARTS"));
+            arr.add(new Permission("Update cart item", "/api/v1/cart/update", "PUT", "CARTS"));
 
             arr.add(new Permission("Place an order", "/api/v1/order", "POST", "ORDERS"));
             arr.add(new Permission("Fetch list order with pagination", "/api/v1/order", "GET", "ORDERS"));
@@ -68,12 +70,15 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Update order", "/api/v1/order", "PUT", "ORDERS"));
 
             arr.add(new Permission("get dashboard", "/api/v1/database/dashboard", "GET", "DASHBOARD"));
+            arr.add(new Permission("Get revenue", "/api/v1/monthly-revenue", "GET", "DASHBOARD"));
+
 
             arr.add(new Permission("Create a customer", "/api/v1/customer", "POST", "CUSTOMERS"));
             arr.add(new Permission("Update a customer", "/api/v1/customer", "PUT", "CUSTOMERS"));
             arr.add(new Permission("Delete a customer", "/api/v1/customer/{id}", "DELETE", "CUSTOMERS"));
             arr.add(new Permission("Get a customer by id", "/api/v1/customer/{id}", "GET", "CUSTOMERS"));
             arr.add(new Permission("Get customer with pagination", "/api/v1/customers", "GET", "CUSTOMERS"));
+            arr.add(new Permission("Get the top 5 customers who buy the most money", "/api/v1/top5-customers", "GET", "CUSTOMERS"));
 
 
             arr.add(new Permission("Create a employee", "/api/v1/employee", "POST", "EMPLOYEES"));
