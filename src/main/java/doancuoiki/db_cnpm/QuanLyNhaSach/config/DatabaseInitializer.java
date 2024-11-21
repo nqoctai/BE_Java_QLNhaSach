@@ -71,6 +71,11 @@ public class DatabaseInitializer implements CommandLineRunner {
 
             arr.add(new Permission("get dashboard", "/api/v1/database/dashboard", "GET", "DASHBOARD"));
             arr.add(new Permission("Get revenue", "/api/v1/monthly-revenue", "GET", "DASHBOARD"));
+            arr.add(new Permission("Get all categores and all book are placed", "/api/v1/dashboard/view1", "GET", "DASHBOARD"));
+            arr.add(new Permission("Get top 5 book sold", "/api/v1/dashboard/get-top5-books-sold", "GET", "DASHBOARD"));
+            arr.add(new Permission("Get view 6 dashboard", "/api/v1/dashboard/view6", "GET", "DASHBOARD"));
+            arr.add(new Permission("Get Gender Ratio", "/api/v1/dashboard/view9", "GET", "DASHBOARD"));
+
 
 
             arr.add(new Permission("Create a customer", "/api/v1/customer", "POST", "CUSTOMERS"));
@@ -79,6 +84,7 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Get a customer by id", "/api/v1/customer/{id}", "GET", "CUSTOMERS"));
             arr.add(new Permission("Get customer with pagination", "/api/v1/customers", "GET", "CUSTOMERS"));
             arr.add(new Permission("Get the top 5 customers who buy the most money", "/api/v1/top5-customers", "GET", "CUSTOMERS"));
+            arr.add(new Permission("Get invoices By Customer Id", "/api/v1/customers/{customerId}/invoices", "GET", "CUSTOMERS"));
 
 
             arr.add(new Permission("Create a employee", "/api/v1/employee", "POST", "EMPLOYEES"));

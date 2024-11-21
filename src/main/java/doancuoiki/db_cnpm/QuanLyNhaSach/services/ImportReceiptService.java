@@ -60,8 +60,6 @@ public class ImportReceiptService {
             Supply supply = supplyService.getSupplyBySupplierIdAndBookId(reqGetSupply);
             if(supply != null) {
                 Book book = supply.getBook();
-                book.setQuantity(book.getQuantity() + reqCreateImportReceiptItem.getQuantity());
-                book = bookService.updateBook(book.getId(), book);
                 supply.setBook(book);
                 importReceiptItem.setSupply(supply);
             }else

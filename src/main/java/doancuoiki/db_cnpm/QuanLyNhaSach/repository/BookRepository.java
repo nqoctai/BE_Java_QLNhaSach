@@ -17,7 +17,7 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
     @Query(value = "SELECT BookID, BookName, TotalQuantity FROM dbo.SachBanDuocTrongKhoangThoiGian(:startDate, :endDate)", nativeQuery = true)
     List<Object[]> getBooksSoldWithinPeriod(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
-    @Query(value = "SELECT * FROM VIEW_7", nativeQuery = true)
+    @Query(value = "SELECT * FROM VIEW_10", nativeQuery = true)
     List<Object[]> getView7();
 
     @Query(value = "SELECT * FROM VIEW_6", nativeQuery = true)
