@@ -19,7 +19,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecific
 
     List<Order> findByCustomer(Customer customer);
 
-    @Query(value = "SELECT Thang AS thang, DoanhThu AS doanhThu FROM dbo.TongDoanhThuTheoNam(:nam)", nativeQuery = true)
+    @Query(value = "SELECT Thang AS thang, DoanhThu AS doanhThu FROM dbo.FUNC_10(:nam)", nativeQuery = true)
     List<ReqMonthkyRevenue> findMonthlyRevenueByYear(@Param("nam") int year);
 
     @Query(value = "EXEC DS_HoaDonKhachHang @maKH = :maKH", nativeQuery = true)
